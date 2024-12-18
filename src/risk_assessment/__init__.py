@@ -1,0 +1,1 @@
+from .risk_assessment import RiskAssessmentModel

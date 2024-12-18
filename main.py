@@ -1,11 +1,11 @@
 import pandas as pd
 import numpy as np
-from data_preprocessing import load_data, prepare_features_targets, split_dataset
-from risk_assessment import RiskAssessmentModel
-from route_optimization import RouteOptimizer
-from maintenance_prediction import MaintenancePredictor
-from external_factors import ExternalFactorsAnalyzer
-from inventory_management import InventoryManager
+from src.data_preprocessing import load_data, prepare_features_targets, split_dataset
+from src.risk_assessment import RiskAssessmentModel
+from src.route_optimization import RouteOptimizer
+from src.maintenance_prediction import MaintenancePredictor
+from src.external_factors import ExternalFactorsAnalyzer
+from src.inventory_management import InventoryManager
 import joblib
 import os
 from datetime import datetime
@@ -40,7 +40,7 @@ def main():
 
         # Load and preprocess data
         log_message("Loading and preprocessing data...", log_file)
-        df = load_data('dynamic_supply_chain_logistics_dataset.csv')
+        df = load_data('data/dynamic_supply_chain_logistics_dataset.csv')  # Updated path
         X, y, feature_columns, target_columns = prepare_features_targets(df)
         X_train, X_test, y_train, y_test = split_dataset(X, y)
         

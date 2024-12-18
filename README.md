@@ -1,133 +1,66 @@
-# Supply Chain Operations Analysis
+# Supply Chain Analytics Project
 
-## Project Overview
-This project analyzes supply chain and logistics operations data to optimize efficiency and manage risks. It processes historical data spanning from January 2021 to January 2024, covering various aspects of transportation, warehouse management, route planning, and real-time monitoring.
-
-## Features
-- **Risk Assessment**: Predictive modeling for supply chain disruptions and risk classification
-- **Route Optimization**: Analysis and optimization of delivery routes
-- **Maintenance Prediction**: Predictive maintenance for logistics vehicles
-- **External Factors Analysis**: Impact analysis of weather, traffic, and other external factors
-- **Inventory Management**: Warehouse and inventory optimization
-- **Data Preprocessing**: Robust data cleaning and preparation pipeline
-
-## Dataset Features
-The dataset includes various logistics metrics such as:
-- GPS coordinates
-- Fuel consumption rates
-- Traffic congestion levels
-- Warehouse inventory levels
-- Loading/unloading times
-- Equipment availability
-- Weather conditions
-- Port congestion levels
-- Supplier reliability scores
-- And more...
+## Overview
+This project implements a comprehensive supply chain analytics solution for Abacus Logistics, focusing on optimization of internal supply chain and logistics operations. The analysis covers various aspects including risk assessment, route optimization, maintenance prediction, external factors analysis, and inventory management.
 
 ## Project Structure
 ```
-supply_chain_operations_big_data/
-├── data_preprocessing.py     # Data cleaning and preparation
-├── risk_assessment.py       # Risk analysis and prediction
-├── route_optimization.py    # Route optimization logic
-├── maintenance_prediction.py # Predictive maintenance
-├── external_factors.py      # External factors analysis
-├── inventory_management.py  # Inventory management
-├── main.py                 # Main execution script
-├── requirements.txt        # Project dependencies
-└── Dockerfile             # Docker configuration
+supply_chain_project/
+│
+├── src/                        # Source code
+│   ├── risk_assessment/       # Risk assessment module
+│   ├── route_optimization/    # Route optimization module
+│   ├── maintenance_prediction/# Maintenance prediction module
+│   ├── external_factors/      # External factors analysis
+│   ├── inventory_management/  # Inventory management module
+│   └── data_preprocessing/    # Data preprocessing utilities
+│
+├── data/                      # Data files
+│   ├── raw/                  # Raw data files
+│   └── processed/            # Processed data files
+│
+├── docs/                      # Documentation
+│
+└── output_*/                  # Generated output and models
 ```
 
-## Setup and Installation
+## Key Results from Analysis
 
-### Using Docker
-1. Build the Docker image:
-```bash
-docker build -t supply_chain_analytics .
-```
+### 1. Risk Assessment
+- Disruption RMSE: 0.283
+- Comprehensive supplier risk analysis performed
 
-2. Run the container:
-```bash
-docker run -v $(pwd):/app supply_chain_analytics
-```
+### 2. Route Optimization
+- Identified 5 route clusters with efficiency scores ranging from 0.25 to 0.55
+- Best performing cluster (2) shows efficiency score of 0.554
 
-### Manual Setup
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/supply_chain_operations_big_data.git
-cd supply_chain_operations_big_data
-```
+### 3. Maintenance Metrics
+- Average fuel consumption: 8.01
+- High temperature incidents: 1,604
+- Poor driving behavior instances: 18,101
+- High fatigue incidents: 15,627
 
-2. Create a virtual environment:
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
+### 4. External Factors Analysis
+- Identified peak traffic hours and congestion patterns
+- Port congestion levels average around 6.9-7.0
+- Weather severity remains relatively stable across weekdays
 
-3. Install dependencies:
+### 5. Inventory Management
+- Safety stock level: 55,552 units
+- Reorder point: 87,032 units
+- Economic order quantity: 46,883 units
+
+## Installation & Usage
 ```bash
+# Clone the repository
+git clone [repository-url]
+
+# Install dependencies
 pip install -r requirements.txt
-```
 
-4. Run the analysis:
-```bash
+# Run the analysis
 python main.py
 ```
 
-## Input Data Format
-The system expects a CSV file with the following columns:
-- Timestamp
-- Vehicle_GPS_Latitude
-- Vehicle_GPS_Longitude
-- Fuel_Consumption_Rate
-- ETA_Variation
-- Traffic_Congestion_Level
-- Warehouse_Inventory_Level
-- Loading_Unloading_Time
-- Handling_Equipment_Availability
-- Order_Fulfillment_Status
-- Weather_Condition_Severity
-- Port_Congestion_Level
-- Shipping_Costs
-- Supplier_Reliability_Score
-- Lead_Time
-- Historical_Demand
-- IoT_Temperature
-- Cargo_Condition_Status
-- Route_Risk_Level
-- Customs_Clearance_Time
-- Driver_Behavior_Score
-- Fatigue_Monitoring_Score
-
-## Output
-The analysis generates:
-- Risk assessment reports
-- Route optimization recommendations
-- Maintenance schedules
-- External factors impact analysis
-- Inventory optimization recommendations
-- Trained machine learning models
-
-## Dependencies
-- Python 3.8+
-- pandas
-- numpy
-- scikit-learn
-- joblib
-- seaborn
-- matplotlib
-
-## Contributing
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## License
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgments
-- Abacus Logistics for providing the dataset
-- Contributors and maintainers of the used Python libraries
-- Supply chain industry experts for domain knowledge
+## Component Documentation
+Detailed documentation for each component can be found in their respective directories under `src/`.
