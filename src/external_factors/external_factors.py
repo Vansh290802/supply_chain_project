@@ -7,6 +7,8 @@ from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 import seaborn as sns
 import matplotlib.pyplot as plt
 from datetime import datetime
+import mlflow
+import mlflow.sklearn
 
 class ExternalFactorsAnalyzer:
     def __init__(self):
@@ -147,7 +149,10 @@ class ExternalFactorsAnalyzer:
         return combined_analysis
     
     def predict_delivery_impact(self, df):
-        """Predict delivery impacts using machine learning"""
+        """Predict delivery impacts using machine learning with MLflow tracking"""
+        # Set experiment
+        mlflow.set_experiment("external_factors_analysis")
+        
         # Prepare features
         features = [
             'Weather_Condition_Severity',
@@ -164,25 +169,107 @@ class ExternalFactorsAnalyzer:
         # Scale features
         X_scaled = self.scaler.fit_transform(X)
         
-        # Train models
-        self.delay_predictor.fit(X_scaled, y_delay)
-        self.time_deviation_predictor.fit(X_scaled, y_deviation)
+        # Train and track delay predictor
+        with mlflow.start_run(run_name="delay_predictor"):
+            # Log model parameters
+            mlflow.log_params({
+                "model_type": "RandomForestRegressor",
+                "n_estimators": self.delay_predictor.n_estimators,
+                "max_depth": self.delay_predictor.max_depth,
+                "random_state": self.delay_predictor.random_state
+            })
+            
+            # Train model
+            self.delay_predictor.fit(X_scaled, y_delay)
+            
+            # Make predictions
+            delay_predictions = self.delay_predictor.predict(X_scaled)
+            
+            # Calculate metrics
+            delay_mse = mean_squared_error(y_delay, delay_predictions)
+            delay_rmse = np.sqrt(delay_mse)
+            delay_mae = mean_absolute_error(y_delay, delay_predictions)
+            delay_r2 = r2_score(y_delay, delay_predictions)
+            delay_cv_scores = cross_val_score(self.delay_predictor, X_scaled, y_delay, cv=5)
+            
+            # Log metrics
+            mlflow.log_metrics({
+                "mse": delay_mse,
+                "rmse": delay_rmse,
+                "mae": delay_mae,
+                "r2": delay_r2,
+                "cv_score_mean": delay_cv_scores.mean(),
+                "cv_score_std": delay_cv_scores.std()
+            })
+            
+            # Log feature importance
+            for idx, importance in enumerate(self.delay_predictor.feature_importances_):
+                mlflow.log_metric(f"feature_importance_{features[idx]}", importance)
+            
+            # Log model
+            mlflow.sklearn.log_model(self.delay_predictor, "delay_predictor_model")
         
-        # Get feature importance
-        feature_importance = pd.DataFrame({
-            'Feature': features,
-            'Delay_Importance': self.delay_predictor.feature_importances_,
-            'Deviation_Importance': self.time_deviation_predictor.feature_importances_
-        })
+        # Train and track time deviation predictor
+        with mlflow.start_run(run_name="time_deviation_predictor"):
+            # Log model parameters
+            mlflow.log_params({
+                "model_type": "GradientBoostingRegressor",
+                "n_estimators": self.time_deviation_predictor.n_estimators,
+                "learning_rate": self.time_deviation_predictor.learning_rate,
+                "random_state": self.time_deviation_predictor.random_state
+            })
+            
+            # Train model
+            self.time_deviation_predictor.fit(X_scaled, y_deviation)
+            
+            # Make predictions
+            deviation_predictions = self.time_deviation_predictor.predict(X_scaled)
+            
+            # Calculate metrics
+            deviation_mse = mean_squared_error(y_deviation, deviation_predictions)
+            deviation_rmse = np.sqrt(deviation_mse)
+            deviation_mae = mean_absolute_error(y_deviation, deviation_predictions)
+            deviation_r2 = r2_score(y_deviation, deviation_predictions)
+            deviation_cv_scores = cross_val_score(self.time_deviation_predictor, X_scaled, y_deviation, cv=5)
+            
+            # Log metrics
+            mlflow.log_metrics({
+                "mse": deviation_mse,
+                "rmse": deviation_rmse,
+                "mae": deviation_mae,
+                "r2": deviation_r2,
+                "cv_score_mean": deviation_cv_scores.mean(),
+                "cv_score_std": deviation_cv_scores.std()
+            })
+            
+            # Log feature importance
+            for idx, importance in enumerate(self.time_deviation_predictor.feature_importances_):
+                mlflow.log_metric(f"feature_importance_{features[idx]}", importance)
+            
+            # Log model
+            mlflow.sklearn.log_model(self.time_deviation_predictor, "time_deviation_predictor_model")
         
-        # Model evaluation
-        delay_cv_scores = cross_val_score(self.delay_predictor, X_scaled, y_delay, cv=5)
-        deviation_cv_scores = cross_val_score(self.time_deviation_predictor, X_scaled, y_deviation, cv=5)
-        
+        # Prepare return metrics
         prediction_metrics = {
-            'feature_importance': feature_importance,
-            'delay_cv_score': delay_cv_scores.mean(),
-            'deviation_cv_score': deviation_cv_scores.mean()
+            'feature_importance': pd.DataFrame({
+                'Feature': features,
+                'Delay_Importance': self.delay_predictor.feature_importances_,
+                'Deviation_Importance': self.time_deviation_predictor.feature_importances_
+            }),
+            'delay_metrics': {
+                'mse': delay_mse,
+                'rmse': delay_rmse,
+                'mae': delay_mae,
+                'r2': delay_r2,
+                'cv_score': delay_cv_scores.mean()
+            },
+            'deviation_metrics': {
+                'mse': deviation_mse,
+                'rmse': deviation_rmse,
+                'mae': deviation_mae,
+                'r2': deviation_r2,
+                'cv_score': deviation_cv_scores.mean()
+            }
         }
         
         return prediction_metrics
