@@ -3,6 +3,45 @@
 ## Overview
 This project implements a comprehensive supply chain analytics solution for Abacus Logistics, focusing on optimization of internal supply chain and logistics operations. The analysis covers various aspects including risk assessment, route optimization, maintenance prediction, external factors analysis, and inventory management.
 
+## Setup Instructions
+
+### 1. Environment Setup
+First, create a `global.env` file in the root directory with the following variables:
+```env
+MLFLOW_TRACKING_USERNAME=your_dagshub_username
+MLFLOW_TRACKING_PASSWORD=your_dagshub_token
+MLFLOW_TRACKING_URI=https://dagshub.com/your_username/supply_chain_project.mlflow
+```
+
+To get these values:
+1. Create an account on [DagsHub](https://dagshub.com/)
+2. Create a new repository on DagsHub
+3. Go to `Integration & Services` in your DagsHub repository
+4. Find the MLflow integration section
+5. Copy the provided tracking URI and credentials
+
+### 2. Installation
+```bash
+# Clone the repository
+git clone https://github.com/Vansh290802/supply_chain_project.git
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Install MLflow
+pip install mlflow
+
+# Create and activate virtual environment (optional but recommended)
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+### 3. Load Environment Variables
+```python
+# The code will automatically load variables from global.env
+# Make sure you've created the file as described above
+```
+
 ## Project Structure
 ```
 supply_chain_project/
@@ -27,11 +66,17 @@ supply_chain_project/
 │   └── saved_models/         # Saved model artifacts and weights
 │
 ├── mlruns/                    # MLflow tracking directory (gitignored)
+├── global.env                 # Environment variables (gitignored)
 └── output_*/                  # Generated output and models
 ```
 
-## Model Tracking with MLflow
-The project now includes MLflow integration for comprehensive model tracking and monitoring:
+## Model Tracking with MLflow and DagsHub
+The project uses MLflow for comprehensive model tracking and monitoring, with DagsHub as the tracking server:
+
+### Viewing Experiments
+1. Go to your DagsHub repository
+2. Navigate to the "Experiments" tab
+3. You'll see all tracked experiments with metrics, parameters, and artifacts
 
 ### Tracked Metrics
 - Model parameters and hyperparameters
@@ -40,13 +85,13 @@ The project now includes MLflow integration for comprehensive model tracking and
 - Supplier risk analysis metrics
 - Model artifacts
 
-### MLflow Usage
+### Running Experiments
 ```bash
-# View MLflow UI
-mlflow ui
-
 # Run analysis with tracking
 python main.py
+
+# Experiments will automatically be logged to DagsHub
+# View them in your DagsHub repository's Experiments tab
 ```
 
 ### Tracked Experiments
@@ -96,7 +141,7 @@ python -m pytest tests/risk_assessment/test_mlflow_logging.py
 ### 1. Risk Assessment
 - Disruption RMSE: 0.283
 - Comprehensive supplier risk analysis performed
-- All metrics tracked in MLflow
+- All metrics tracked in MLflow and viewable on DagsHub
 
 ### 2. Route Optimization
 - Identified 5 route clusters with efficiency scores ranging from 0.25 to 0.55
@@ -118,23 +163,47 @@ python -m pytest tests/risk_assessment/test_mlflow_logging.py
 - Reorder point: 87,032 units
 - Economic order quantity: 46,883 units
 
-## Installation & Usage
-```bash
-# Clone the repository
-git clone https://github.com/Vansh290802/supply_chain_project.git
+## Troubleshooting
 
-# Install dependencies
-pip install -r requirements.txt
+### MLflow Connection Issues
+1. Verify your `global.env` file is properly formatted and contains the correct credentials
+2. Ensure you have network access to DagsHub
+3. Check if your DagsHub token has the necessary permissions
+4. Try running `mlflow --version` to ensure MLflow is properly installed
 
-# Install MLflow
-pip install mlflow
+### Missing Experiments
+If your experiments are not showing up in DagsHub, the most common cause is incorrect environment setup. Follow these steps:
 
-# Run the analysis
-python main.py
+1. **Critical: Environment Variables Check**
+   ```bash
+   # Your global.env MUST contain these three variables - experiments won't log without them!
+   MLFLOW_TRACKING_USERNAME=your_dagshub_username
+   MLFLOW_TRACKING_PASSWORD=your_dagshub_token
+   MLFLOW_TRACKING_URI=https://dagshub.com/your_username/supply_chain_project.mlflow
+   ```
+   - All three variables are mandatory - missing any one will prevent experiment logging
+   - Double-check there are no typos in variable names
+   - Make sure the values match exactly with what DagsHub provides
 
-# View MLflow dashboard
-mlflow ui
-```
+2. **Common Environment Issues**
+   - Don't use quotes around the values in global.env
+   - Ensure there are no spaces around the '=' sign
+   - Check if global.env is in the root directory of the project
+   - Verify that python-dotenv is installed (`pip install python-dotenv`)
+
+3. **Verify Connection**
+   ```python
+   # Add this to your code temporarily to debug:
+   import os
+   print(os.getenv('MLFLOW_TRACKING_URI'))  # Should show your DagsHub URI
+   print(os.getenv('MLFLOW_TRACKING_USERNAME'))  # Should show your username
+   ```
+
+4. **Still Not Working?**
+   - Check the console for any MLflow-related error messages
+   - Verify your DagsHub repository has MLflow integration enabled
+   - Try running a simple test experiment with minimal code
+   - Check your DagsHub token has the necessary permissions
 
 ## Component Documentation
 Detailed documentation for each component can be found in their respective directories under `src/`.

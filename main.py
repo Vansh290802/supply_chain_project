@@ -7,10 +7,26 @@ from src.route_optimization import RouteOptimizer
 from src.maintenance_prediction import MaintenancePredictor
 from src.external_factors import ExternalFactorsAnalyzer
 from src.inventory_management import InventoryManager
+from config.mlflow_config import MLFLOW_TRACKING_URI
 import joblib
 import os
 from datetime import datetime
 import traceback
+import mlflow
+from dotenv import find_dotenv,load_dotenv
+
+import os 
+
+
+# Load environment variables
+_ = load_dotenv(find_dotenv('./global.env'))
+
+
+os.environ['MLFLOW_TRACKING_USERNAME'] = os.getenv('MLFLOW_TRACKING_USERNAME')
+os.environ['MLFLOW_TRACKING_PASSWORD'] = os.getenv('MLFLOW_TRACKING_PASSWORD')
+
+
+mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
 
 def create_output_directory():
     """Create output directory for results and logs"""

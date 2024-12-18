@@ -31,3 +31,8 @@ output_*/
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Environment variables
+global.env
+.env
+*.env
