@@ -15,14 +15,26 @@ supply_chain_project/
 │   ├── inventory_management/  # Inventory management module
 │   └── data_preprocessing/    # Data preprocessing utilities
 │
-├── data/                      # Data files
-│   ├── raw/                  # Raw data files
-│   └── processed/            # Processed data files
+├── data/                      # Data directory
+│   ├── dynamic_supply_chain_logistics_dataset.csv    # Main dataset
+│   └── sample_data.csv        # Sample dataset for testing
 │
-├── docs/                      # Documentation
+├── docs/                      # Documentation directory
+│   ├── run_logs/             # Execution logs from analysis runs
+│   └── saved_models/         # Saved model artifacts and weights
 │
 └── output_*/                  # Generated output and models
 ```
+
+## Data Directory
+The `data` directory contains two main files:
+- `dynamic_supply_chain_logistics_dataset.csv`: The complete dataset containing all supply chain metrics from 2021-2024
+- `sample_data.csv`: A smaller sample dataset useful for testing and development
+
+## Documentation
+The `docs` directory contains:
+- `run_logs/`: Log files generated during analysis runs, containing detailed execution information and results
+- `saved_models/`: Trained models and their weights, saved after successful analysis runs
 
 ## Key Results from Analysis
 
@@ -53,7 +65,7 @@ supply_chain_project/
 ## Installation & Usage
 ```bash
 # Clone the repository
-git clone [repository-url]
+git clone https://github.com/Vansh290802/supply_chain_project.git
 
 # Install dependencies
 pip install -r requirements.txt
